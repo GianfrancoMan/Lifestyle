@@ -47,11 +47,16 @@ class HTTPService {
 
   //for others: this should be private.
   async _getNearCityByCoords(lat, lng) {
-    let path = import.meta.env.MAN_NEARBY_PREFIX + lat + import.meta.env.MAN_NEARBY_MID + lng + import.meta.env.MAN_NEARBY_SUFFIX;
+    let path = import.meta.env.MAN_LOCIQ_PREFIX + lat + import.meta.env.MAN_LOCIQ_MIDLE + lng + import.meta.env.MAN_LOCIQ_SUFIX;
     if(this.#latest !== path) {
       this.#latest = path;
       return axios.get(path)
-      .then((response) => response.data['geonames'][0]['name']);
+      .then((response) => {
+        if( response.data.address.village)
+          return response.data.address.village;
+
+        return response.data.address.city;
+        });
     }
     return;
   }
