@@ -10,7 +10,7 @@ class HTTPService {
 
 
   async getDataForCity(city) {
-    let url = MAN_TELEPORT_ROOT + city;
+    let url = import.meta.env.MAN_TELEPORT_ROOT + city;
     try {
       try {
         const response = await axios.get(url);
