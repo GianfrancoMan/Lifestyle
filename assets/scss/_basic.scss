@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#home {
+  width: 100vw;
+  height: 100vh;
+  background-color: $primary_background;
+  #header {
+    text-align: center;
+    color: rgb(128, 36, 13);
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 100vw;
+    height: 20vh;
+    #city {
+      border: 1px, solid $orange;
+      border-radius: 10px;
+      height: 40px;
+      width: 300px;
+    }
+  }
+
+  #map {
+    position: relative;
+    height: 77vh;
+    width: 80vw;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid $orange;
+    border-radius: 5px;
+    .spinner {
+      display: none;
+    }
+  }
+
+  .toast {
+    &-body, &:last-child {
+      font-size: 20px;
+      text-align: center;
+      padding-bottom: 3px;
+    }
+  }
+}

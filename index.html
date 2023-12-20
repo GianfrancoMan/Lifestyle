@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>City Life Style</title>
+  </head>
+  <body>
+    <div id="home">
+      <header id="header">
+        <h1>Welcome To City Life Style</h1>
+        <p>Choose a place on the map or enter it in the field below to see its lifestyle ratings</p>
+        <input type="text" name="city" id="city" placeholder="Type the city's name">
+        <button type="button" class="btn btn-success headerd-btn">Ok</button>
+      </header>
+
+      <div id="map"></div>
+
+      <div class="spinner-grow text-success spinner" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <!--<img src="..." class="rounded me-2" alt="...">-->
+          <strong class="me-auto">City Life Style</strong>
+          <small class="text-body-secondary">now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">&#x1F612;</div>
+      </div>
+
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
