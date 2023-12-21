@@ -1,23 +1,39 @@
 export
 class ToastComponent {
 
-  #toast;
-  #toastBS;
+  #doc;
 
   constructor(doc) {
-    this.#toast = doc.querySelector('.toast');
-    this.#toast.style.display = "block";
-    this.#toast.style.position = "absolute";
-    this.#toast.style.top = doc.querySelector('#home').offsetHeight/2 - (this.#toast.clientHeight/2) + "px";
-    this.#toast.style.left = doc.querySelector('#home').offsetWidth/2 - (this.#toast.clientWidth/2) + "px";
-    this.#toast.style.zIndex = 1000;
-    this.#toast.style.visibility = "hidden";
+    this.#doc = doc;
   }
 
-  //for others: This should be a private method
-  _showToast(message) {
-    this.#toast.lastChild.textContent = message;
-    this.#toast.style.visibility = "visible";
-    setTimeout(()=> this.#toast.style.visibility = "hidden", 2000);
+
+  //create a new toast and append it in the body.
+  createToast(message="") {
+    let toast = this.#doc.createElement(`div`);
+    this.#doc.querySelector('#alert_toast').append(toast);
+
+    toast.innerHTML = `<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">`+
+                        `<div class="toast-header">`+
+                          `<!--<img src="..." class="rounded me-2" alt="...">-->`+
+                          `<strong class="me-auto">City Life Style</strong>`+
+                          `<small class="text-body-secondary">now</small>`+
+                          `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>`+
+                        `</div>`+
+                        `<div class="toast-body">&#x1F612; ${message}</div>`+
+                      `</div>`;
+    toast.style.top = this.#doc.querySelector('#home').offsetHeight/2-15 + "px";
+    toast.style.left = this.#doc.querySelector('#home').offsetWidth/2-15 + "px";
+    toast.style.display ="block";
+    toast.style.position = "absolute";
+    toast.style.zIndex = "2000";
+    toast.style.visibility = "visible"
+    setTimeout(()=> this.remove(toast), 2000);
+
   }
+
+  remove(toastElem) {
+    toastElem.remove();
+  }
+
 }

@@ -6,7 +6,8 @@ class HTTPService {
 
   #latest = null;
 
-  constructor(){}
+  constructor(){
+  }
 
 
   async getDataForCity(city) {
@@ -15,7 +16,8 @@ class HTTPService {
       try {
         const response = await axios.get(url);
         // handle success
-        let data = response.data._embedded["city:search-results"][0]["_links"]["city:item"].href;
+        console.log(response);
+        let data = response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"];
         let urbanAreaPath = await this._getUrbanArea(data).then((urbanArea) => urbanArea);
         return await this._getScores(urbanAreaPath).then(scores => scores);
       } catch (error) {
@@ -45,19 +47,18 @@ class HTTPService {
     ]);
   }
 
-  //for others: this should be private.
-  async _getNearCityByCoords(lat, lng) {
+  async getNearCityByCoords(lat, lng) {
     let path = import.meta.env.MAN_LOCIQ_PREFIX + lat + import.meta.env.MAN_LOCIQ_MIDLE + lng + import.meta.env.MAN_LOCIQ_SUFIX;
     if(this.#latest !== path) {
       this.#latest = path;
-      return axios.get(path)
-      .then((response) => {
+      return axios.get(path).then((response) => {
         if( response.data.address.village)
           return response.data.address.village;
 
         return response.data.address.city;
-        });
+      });
     }
+
     return;
   }
 }

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>City Life Style</title>
   </head>
+
   <body id="body" hidden>
     <div id="home">
       <header id="header">
@@ -19,21 +20,14 @@
 
       <div id="map"></div>
 
-      <div class="spinner-grow text-success spinner" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+      <!--spinner (dynamically created) -->
 
-      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <!--<img src="..." class="rounded me-2" alt="...">-->
-          <strong class="me-auto">City Life Style</strong>
-          <small class="text-body-secondary">now</small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">&#x1F612;</div>
-      </div>
-
+      <!--Alert (dynamically created) -->
+      <div id="alert_toast"></div>
     </div>
+
+
+ 
     <script type="module" src="./main.js"></script>
   </body>
 </html>
