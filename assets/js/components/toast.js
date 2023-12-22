@@ -1,6 +1,6 @@
 export
 class ToastComponent {
-
+  #toast;
   #doc;
 
   constructor(doc) {
@@ -8,32 +8,30 @@ class ToastComponent {
   }
 
 
-  //create a new toast and append it in the body.
+  //create a new this.#toast and append it in the body.
   createToast(message="") {
-    let toast = this.#doc.createElement(`div`);
-    this.#doc.querySelector('#alert_toast').append(toast);
+    this.#toast = this.#doc.createElement(`div`);
+    this.#doc.querySelector('#home').append(this.#toast);
 
-    toast.innerHTML = `<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">`+
-                        `<div class="toast-header">`+
-                          `<!--<img src="..." class="rounded me-2" alt="...">-->`+
-                          `<strong class="me-auto">City Life Style</strong>`+
-                          `<small class="text-body-secondary">now</small>`+
-                          `<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>`+
-                        `</div>`+
-                        `<div class="toast-body">&#x1F612; ${message}</div>`+
-                      `</div>`;
-    toast.style.top = this.#doc.querySelector('#home').offsetHeight/2-15 + "px";
-    toast.style.left = this.#doc.querySelector('#home').offsetWidth/2-15 + "px";
-    toast.style.display ="block";
-    toast.style.position = "absolute";
-    toast.style.zIndex = "2000";
-    toast.style.visibility = "visible"
-    setTimeout(()=> this.remove(toast), 2000);
-
+    this.#toast.innerHTML = `<div>`+
+                              `<p>&#x1F612; ${message}</p>`+
+                            `</div>`;
+    this.#toast.style.position= "absolute";
+    this.#toast.style.width= "300px";
+    this.#toast.style.height= "200px";
+    this.#toast.style.backgroundColor= "rgb(90, 146, 158)" ;
+    this.#toast.style.color= "rgb(128, 36, 13);";
+    this.#toast.style.zIndex= 2000;
+    this.#toast.style.top = this.#doc.querySelector('#home').offsetHeight/2-15 - this.#toast.clientHeight/2 + "px";
+    this.#toast.style.left = this.#doc.querySelector('#home').offsetWidth/2-15 - this.#toast.clientWidth/2 + "px";
+    this.#toast.style.display = "flex";
+    this.#toast.style.justifyContent = "center";
+    this.#toast.style.alignItems= "center";
+    setTimeout(()=> this.remove(), 2000);
   }
 
-  remove(toastElem) {
-    toastElem.remove();
+  remove() {
+    this.#toast.remove();
   }
 
 }

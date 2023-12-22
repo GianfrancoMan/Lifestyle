@@ -17,7 +17,7 @@ class HTTPService {
         const response = await axios.get(url);
         // handle success
         console.log(response);
-        let data = response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"];
+        let data = response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"]["href"];
         let urbanAreaPath = await this._getUrbanArea(data).then((urbanArea) => urbanArea);
         return await this._getScores(urbanAreaPath).then(scores => scores);
       } catch (error) {
