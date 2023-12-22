@@ -30,7 +30,17 @@
     margin: auto;
     margin-bottom: 10px;
     border: 1px solid $orange;
-    border-radius: 5px;
+    border-radius: 15px;
+  }
+
+  .about-city {
+    position: relative;
+    height: 77vh;
+    width: 80vw;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid $orange;
+    border-radius: 15px;
   }
 
   .alert-toast {

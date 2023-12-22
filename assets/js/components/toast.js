@@ -14,10 +14,10 @@ class ToastComponent {
     this.#doc.querySelector('#home').append(this.#toast);
 
     this.#toast.innerHTML = `<div>`+
-                              `<p>&#x1F612; ${message}</p>`+
+                              `<p>&#x1F612;<br>${message}</p>`+
                             `</div>`;
     this.#toast.style.position= "absolute";
-    this.#toast.style.width= "300px";
+    this.#toast.style.width= "fit-content";
     this.#toast.style.height= "200px";
     this.#toast.style.backgroundColor= "rgb(90, 146, 158)" ;
     this.#toast.style.color= "rgb(128, 36, 13);";
@@ -27,7 +27,9 @@ class ToastComponent {
     this.#toast.style.display = "flex";
     this.#toast.style.justifyContent = "center";
     this.#toast.style.alignItems= "center";
-    setTimeout(()=> this.remove(), 2000);
+    this.#toast.style.borderRadius= "15px";
+    this.#toast.style.padding= "5px";
+    setTimeout(()=> this.remove(), 5000);
   }
 
   remove() {

@@ -5,46 +5,48 @@ export
 class HTTPService {
 
   #latest = null;
+  #dataForScores = {};
 
   constructor(){
   }
 
 
   async getDataForCity(city) {
+    return await this._getScores(await this._dataForCity(city).then(urbanArea => urbanArea), "scores/").then(scores => {
+      return [
+        scores.data["categories"],
+        scores.data["summary"],
+        scores.data["teleport_city_score"]
+        ];s
+    });
+  }
+
+  async getImageCity(city) {
+    return await this._getScores(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
+      image.data.photos[0]["image"]["mobile"]
+    );
+  }
+
+  //this method should be considered private
+  async _dataForCity(city) {
     let url = import.meta.env.MAN_TELEPORT_ROOT + city;
-    try {
-      try {
-        const response = await axios.get(url);
-        // handle success
-        console.log(response);
-        let data = response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"]["href"];
-        let urbanAreaPath = await this._getUrbanArea(data).then((urbanArea) => urbanArea);
-        return await this._getScores(urbanAreaPath).then(scores => scores);
-      } catch (error) {
-        // handle error
-        console.log(error + " " + url);
-      }
-    } finally {
-      // always executed
-      console.log("Always executed.");
-    }
+    const response = await axios.get(url);
+    let data = response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"]["href"];
+    return await this._getUrbanArea(data).then((urbanArea) => urbanArea);
   }
 
   //for others: this should be private.
   async _getUrbanArea(path) {
-    return axios.get(path)
-    .then(response => response.data["_links"]["city:urban_area"]["href"]);
+    return axios.get(path).then(response => {
+      return response.data["_links"]["city:urban_area"]["href"]
+    });
   }
 
   //for others: this should be private.
-  async _getScores(path) {
-    const url = path.slice(0, -1) + "/scores/";
+  async _getScores(path, suffix) {
+    const url = path + suffix;
     return axios.get(url)
-    .then(response => [
-      response.data["categories"], 
-      response.data["summary"], 
-      response.data["teleport_city_score"]
-    ]);
+    .then(response => response );
   }
 
   async getNearCityByCoords(lat, lng) {
@@ -61,6 +63,7 @@ class HTTPService {
 
     return;
   }
+
 }
 
 

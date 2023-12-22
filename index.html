@@ -12,13 +12,17 @@
   <body id="body" hidden>
     <div id="home">
       <header id="header">
-        <h1>Welcome To City Life Style</h1>
+        <h1>City Lifestyle</h1>
         <p>Choose a place on the map or enter it in the field below to see its lifestyle ratings</p>
-        <input type="text" name="city" id="city" placeholder="Type the city's name">
-        <button id="id_btn" type="button" class="btn btn-success header-btn">Ok</button>
+        <div>
+          <input type="text" name="city" id="city" placeholder="Type the city's name">
+          <button id="id_btn" type="button" class="btn btn-success header-btn">Ok</button>
+          <div id="about" hidden ></div>
+        </div>
       </header>
 
       <div id="map"></div>
+      <div class="about-city" hidden ></div>
 
       <!--spinner (dynamically created) -->
 

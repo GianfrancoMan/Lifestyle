@@ -17,6 +17,10 @@ class HandlerService {
   }
 
   _handlerEvent() {
+
+    let cityName;
+    let imageCity;
+
     window.onload =()=> {
       //   //contents are displayed only when whole assets has been loaded
       this.#document.querySelector('#body').removeAttribute('hidden');
@@ -40,26 +44,29 @@ class HandlerService {
         //handles map clicks
         this.#map.on('click', async (event) => {
           var clickedLatLng = event.latlng;
-          let cityName = "";
+          cityName = "";
 
 
-          let spinner = new SpinnerComponent(this.#document);
+          let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
+          spinner.start();    //...that appears until data is available.
 
-          spinner.start();
           await  this.#http.getNearCityByCoords(clickedLatLng.lat, clickedLatLng.lng)
           .then((response)=> {
             if(response)
               cityName = response;
           })
           .catch(err => {
-            console.log(err.message);
-            let toast = new ToastComponent(this.#document);
-            toast.createToast("The selected place isn't inhabited.")
+            let toast = new ToastComponent(this.#document);   //creates a toast... 
+            toast.createToast("The selected location is not inhabited.<br>Choose another location.");   //...that will be displayed with 'message'.
           });
 
           spinner.stop();
 
-          if(cityName) this.#document.querySelector("#city").setAttribute('value', cityName);
+
+          if(cityName) {
+            cityName = this._normalizeCity(cityName);
+            this.#document.querySelector("#city").setAttribute('value', cityName);
+          }
           else {
             this.#document.querySelector("#city").setAttribute('value', "");
           }
@@ -70,18 +77,56 @@ class HandlerService {
       //handles city-button clicks.
       let btnElem = this.#document.querySelector('#id_btn');
       btnElem.addEventListener('click', async (e)=> {
+        let checkDataError= false;
         let cityName = this.#document.querySelector('#city').value;
         if(cityName) {
-          console.log(cityName);
-          await this.#http.getDataForCity(cityName).then((response)=>{
-            if(response)
-              console.log(response);//TODO TODO TODO TODO
+          let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
+          spinner.start();    //...that appears until data is available.
+
+          await this.#http.getDataForCity(cityName).then((responseData)=>{
+            if(responseData)
+              console.log(responseData);//TODO TODO TODO TODO
+          })
+          .catch(err => {
+            checkDataError = true;
+            let toast = new ToastComponent(this.#document);
+            toast.createToast(
+              `There is no lifestyle data available for ${cityName}<br/>`+
+              `Usually this type of data is available for very large or important cities<br>`+
+              `(cities like Rome, Milan or New York...).`);
           });
+          await this.#http.getImageCity(cityName).then((responseImage)=>{    //get an image of the city
+            if(responseImage)
+              console.log(responseImage);//TODO TODO TODO TODO
+          })
+          .catch(err => {
+            let toast = new ToastComponent(this.#document);
+            if(checkDataError) {
+              setTimeout(()=> toast.createToast(`There is no image available for ${cityName}`), 5000);
+            }
+            else toast.createToast(`There is no image available for ${cityName.charAt(0).toUpperCase() + cityName.slice(1)} city.`);
+          });
+          spinner.stop();
         }
       });
 
     };
 
+  }
+
+  //this method should be considered private.
+  _normalizeCity(value) {
+    value = value.toLowerCase();
+
+    if (value.toLowerCase().includes("comune di")) {
+      let arr = value.split(" ");
+      arr.shift();
+      arr.shift();
+
+      return arr.join(" ");
+    }
+
+    return value;
   }
 
 }
