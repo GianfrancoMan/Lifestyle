@@ -1,6 +1,7 @@
 import {HTTPService} from "./http-service";
 import { SpinnerComponent } from "../components/spinner";
 import { ToastComponent } from "../components/toast";
+import { Tab } from "bootstrap";
 
 export
 class HandlerService {
@@ -39,7 +40,6 @@ class HandlerService {
           e.preventDefault();
         }
 
-        let cityButton = this.#document.querySelector('#id_btn');
 
         //handles map clicks
         this.#map.on('click', async (event) => {
@@ -75,10 +75,12 @@ class HandlerService {
 
 
       //handles city-button clicks.
-      let btnElem = this.#document.querySelector('#id_btn');
-      btnElem.addEventListener('click', async (e)=> {
+      let searchBtnElem = this.#document.querySelector('#search');
+      searchBtnElem.addEventListener('click', async (e)=> {
         let checkDataError= false;
+        let toast = new ToastComponent(this.#document);
         let cityName = this.#document.querySelector('#city').value;
+
         if(cityName) {
           let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
           spinner.start();    //...that appears until data is available.
@@ -86,28 +88,42 @@ class HandlerService {
           await this.#http.getDataForCity(cityName).then((responseData)=>{
             if(responseData)
               console.log(responseData);//TODO TODO TODO TODO
+              this.#document.querySelector("#search_container").setAttribute("hidden", true);
+              this.#document.querySelector("#new_search_container").removeAttribute("hidden");
+              this.#document.querySelector("#map").setAttribute("hidden", true);
           })
           .catch(err => {
             checkDataError = true;
-            let toast = new ToastComponent(this.#document);
             toast.createToast(
               `There is no lifestyle data available for ${cityName}<br/>`+
               `Usually this type of data is available for very large or important cities<br>`+
               `(cities like Rome, Milan or New York...).`);
           });
+
           await this.#http.getImageCity(cityName).then((responseImage)=>{    //get an image of the city
             if(responseImage)
               console.log(responseImage);//TODO TODO TODO TODO
           })
           .catch(err => {
-            let toast = new ToastComponent(this.#document);
             if(checkDataError) {
-              setTimeout(()=> toast.createToast(`There is no image available for ${cityName}`), 5000);
+              toast.append(`<br>There is no image available for ${cityName}`);
+              checkDataError = false;
             }
-            else toast.createToast(`There is no image available for ${cityName.charAt(0).toUpperCase() + cityName.slice(1)} city.`);
+            else {    //If for some unforeseeable reason the application was unable to recover the image :)
+              let toastImage = new ToastComponent(this.#document);
+              toastImage.createToast(`There is no image available for ${cityName.charAt(0).toUpperCase() + cityName.slice(1)} city.`);
+            }
           });
+
           spinner.stop();
         }
+      });
+
+      //Handler for 'new_search' button
+      let newSearchBtnElem = this.#document.addEventListener('click', (e)=> {
+        this.#document.querySelector("#search_container").removeAttribute("hidden");
+        this.#document.querySelector("#new_search_container").setAttribute("hidden", true);
+        this.#document.querySelector("#map").removeAttribute("hidden");
       });
 
     };
@@ -118,7 +134,7 @@ class HandlerService {
   _normalizeCity(value) {
     value = value.toLowerCase();
 
-    if (value.toLowerCase().includes("comune di")) {
+    if (value.includes("comune di") || value.includes("città di")) {
       let arr = value.split(" ");
       arr.shift();
       arr.shift();

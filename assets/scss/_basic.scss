@@ -8,6 +8,9 @@
   width: 100vw;
   height: 100vh;
   background-color: $primary_background;
+  background-image: url("../images/5594016.jpg");
+  background-repeat: round;
+  background-size: cover;
   #header {
     text-align: center;
     color: $primary_text;
@@ -29,8 +32,9 @@
     width: 80vw;
     margin: auto;
     margin-bottom: 10px;
-    border: 1px solid $orange;
+    border: 2px solid $primary_text;
     border-radius: 15px;
+    box-shadow:"rgb(199, 3, 3) 15px -15px 15px, rgb(199, 3, 3) -15px 15px 15px";
   }
 
   .about-city {
@@ -43,12 +47,4 @@
     border-radius: 15px;
   }
 
-  .alert-toast {
-    position: "absolute";
-    width: "300px";
-    height: "200px";
-    background-color: $primary_background ;
-    color: $primary_text;
-    z-index: 2000;
-  }
 }

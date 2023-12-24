@@ -5,7 +5,6 @@ export
 class HTTPService {
 
   #latest = null;
-  #dataForScores = {};
 
   constructor(){
   }
@@ -38,7 +37,7 @@ class HTTPService {
   //for others: this should be private.
   async _getUrbanArea(path) {
     return axios.get(path).then(response => {
-      return response.data["_links"]["city:urban_area"]["href"]
+      return response.data["_links"]["city:urban_area"]["href"];
     });
   }
 
@@ -62,6 +61,11 @@ class HTTPService {
     }
 
     return;
+  }
+
+  _normalize(value) {
+    arr = value.split(",");
+    return arr[0].toLowerCase();
   }
 
 }
