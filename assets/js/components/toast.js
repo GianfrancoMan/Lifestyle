@@ -38,6 +38,7 @@ class ToastComponent {
     closeToast.innerHTML = '<strong id="close">[X]</strong>';
     closeToast.style.position = "relative";
     closeToast.style.fontSize = "18px";
+    closeToast.style.cursor = "pointer"
     let close = this.#doc.querySelector("#close");
     close.style.position = "absolute";
     close.style.top = -this.#toast.clientHeight/2 + "px";

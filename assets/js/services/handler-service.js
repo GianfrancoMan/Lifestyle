@@ -28,11 +28,7 @@ class HandlerService {
 
 
       //leaflet tile server script
-      this.#map = L.map('map').setView([41.902782, 12.496366], 6);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }).addTo(this.#map);
+      if(this.#map == null || this.#map == undefined) this._createMap();
 
       //prevent unwanted default behavior over elements except for field input and map container elements.
       this.#document.addEventListener("pointerdown", (e) => {
@@ -64,7 +60,6 @@ class HandlerService {
 
 
           if(cityName) {
-            cityName = this._normalizeCity(cityName);
             this.#document.querySelector("#city").setAttribute('value', cityName);
           }
           else {
@@ -79,7 +74,7 @@ class HandlerService {
       searchBtnElem.addEventListener('click', async (e)=> {
         let checkDataError= false;
         let toast = new ToastComponent(this.#document);
-        let cityName = this.#document.querySelector('#city').value;
+        cityName = this._normalizeCity(cityName);
 
         if(cityName) {
           let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
@@ -91,6 +86,7 @@ class HandlerService {
               this.#document.querySelector("#search_container").setAttribute("hidden", true);
               this.#document.querySelector("#new_search_container").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
+              this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
           })
           .catch(err => {
             checkDataError = true;
@@ -124,6 +120,8 @@ class HandlerService {
         this.#document.querySelector("#search_container").removeAttribute("hidden");
         this.#document.querySelector("#new_search_container").setAttribute("hidden", true);
         this.#document.querySelector("#map").removeAttribute("hidden");
+
+         if(this.#map) this._createMap();   //I create a new map to be used by the user(it was removed earlier when we got the city data).
       });
 
     };
@@ -143,6 +141,16 @@ class HandlerService {
     }
 
     return value;
+  }
+
+  //create the map component, this method should be considered private.
+  _createMap() {
+          //leaflet tile server script
+      this.#map = L.map('map').setView([41.902782, 12.496366], 6);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(this.#map);
   }
 
 }
