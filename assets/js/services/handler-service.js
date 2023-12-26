@@ -10,12 +10,14 @@ class HandlerService {
   #http;
   #map;
 
+
   constructor(doc, L) {
     this.#document = doc;
     this.#http = new HTTPService(doc);
     this._handlerEvent();
-
   }
+
+
 
   _handlerEvent() {
 
@@ -23,12 +25,12 @@ class HandlerService {
     let imageCity;
 
     window.onload =()=> {
-      //   //contents are displayed only when whole assets has been loaded
+      //contents are displayed only when whole assets has been loaded
       this.#document.querySelector('#body').removeAttribute('hidden');
 
 
       //leaflet tile server script
-      if(this.#map == null || this.#map == undefined) this._createMap();
+      this._createMap();
 
       //prevent unwanted default behavior over elements except for field input and map container elements.
       this.#document.addEventListener("pointerdown", (e) => {
@@ -52,7 +54,7 @@ class HandlerService {
               cityName = response;
           })
           .catch(err => {
-            let toast = new ToastComponent(this.#document);   //creates a toast... 
+            let toast = new ToastComponent(this.#document);   //creates a toast...
             toast.createToast("The selected location is not inhabited.<br>Choose another location.");   //...that will be displayed with 'message'.
           });
 
@@ -60,10 +62,7 @@ class HandlerService {
 
 
           if(cityName) {
-            this.#document.querySelector("#city").setAttribute('value', cityName);
-          }
-          else {
-            this.#document.querySelector("#city").setAttribute('value', "");
+            this.#document.querySelector("#city").value = cityName;
           }
         });
       });
@@ -74,19 +73,20 @@ class HandlerService {
       searchBtnElem.addEventListener('click', async (e)=> {
         let checkDataError= false;
         let toast = new ToastComponent(this.#document);
-        cityName = this._normalizeCity(cityName);
+        cityName = this.#document.querySelector("#city").value;
 
         if(cityName) {
+          cityName = this._normalizeCity(cityName);
           let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
           spinner.start();    //...that appears until data is available.
 
           await this.#http.getDataForCity(cityName).then((responseData)=>{
             if(responseData)
+              this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
               console.log(responseData);//TODO TODO TODO TODO
               this.#document.querySelector("#search_container").setAttribute("hidden", true);
               this.#document.querySelector("#new_search_container").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
-              this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
           })
           .catch(err => {
             checkDataError = true;
@@ -121,12 +121,16 @@ class HandlerService {
         this.#document.querySelector("#new_search_container").setAttribute("hidden", true);
         this.#document.querySelector("#map").removeAttribute("hidden");
 
-         if(this.#map) this._createMap();   //I create a new map to be used by the user(it was removed earlier when we got the city data).
+        this.#document.querySelector("#city").value = "";
+
+        this._createMap();   //I create a new map to be used by the user(it was removed earlier when we got the city data).
       });
 
     };
-
   }
+
+
+
 
   //this method should be considered private.
   _normalizeCity(value) {
@@ -143,9 +147,12 @@ class HandlerService {
     return value;
   }
 
+
+
+
   //create the map component, this method should be considered private.
   _createMap() {
-          //leaflet tile server script
+      //leaflet tile server script
       this.#map = L.map('map').setView([41.902782, 12.496366], 6);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,

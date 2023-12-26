@@ -10,8 +10,10 @@ class HTTPService {
   }
 
 
+  //returns scores data of the city
+  //this method should be considered private
   async getDataForCity(city) {
-    return await this._getScores(await this._dataForCity(city).then(urbanArea => urbanArea), "scores/").then(scores => {
+    return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "scores/").then(scores => {
       return [
         scores.data["categories"],
         scores.data["summary"],
@@ -20,35 +22,58 @@ class HTTPService {
     });
   }
 
+
+
+
+  //returns the image of the city if exists
+  //this method should be considered private
   async getImageCity(city) {
-    return await this._getScores(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
+    return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
       image.data.photos[0]["image"]["mobile"]
     );
   }
 
+
+
+
   //this method should be considered private
+  //this method is the base to get "urban data area" if them exist.
   async _dataForCity(city) {
     let url = import.meta.env.MAN_TELEPORT_ROOT + city;
     const response = await axios.get(url);
-    let data = await this._findCityGeonameUrl(response, city);//response.data["_embedded"]["city:search-results"][0]["_links"]["city:item"]["href"];
+    let data = await this._findCityGeonameUrl(response, city);
     return await this._getUrbanArea(data).then((urbanArea) => urbanArea);
   }
 
-  //for others: this should be private.
+
+
+
+  //this should be considered private.
+  //Returns "data urban area" path of the city.
   async _getUrbanArea(path) {
     return axios.get(path).then(response => {
       return response.data["_links"]["city:urban_area"]["href"];
     });
   }
 
+
+
+
   //for others: this should be private.
-  async _getScores(path, suffix) {
+  //Returns path to retrieve data of the city that can be:
+  //1) Lifestyle scores and a brief description of the city.
+  //2) An image of the citS.
+  //The type is determined by suffix passed as parameter
+  async _getAvailableDataByPath(path, suffix) {
     const url = path + suffix;
     return axios.get(url)
     .then(response => response );
   }
 
-  //
+
+
+
+  //Asks LocationIq web service for the city closest to the provided coordinates, if it exists.
   async getNearCityByCoords(lat, lng) {
     let path = import.meta.env.MAN_LOCIQ_PREFIX + lat + import.meta.env.MAN_LOCIQ_MIDLE + lng + import.meta.env.MAN_LOCIQ_SUFIX;
     if(this.#latest !== path) {
@@ -65,12 +90,11 @@ class HTTPService {
     return;
   }
 
-  _normalize(value) {
-    arr = value.split(",");
-    return arr[0].toLowerCase();
-  }
+
+
 
   //If exists, find the Geoname url for the chosen by the user.
+  //This method should be considered private
   async _findCityGeonameUrl(resultData , city) {
     return new Promise((resolve, reject )=> {
       let results = resultData.data["_embedded"]["city:search-results"];
