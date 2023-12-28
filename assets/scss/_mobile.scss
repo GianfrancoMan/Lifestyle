@@ -1,12 +1,14 @@
-@media only screen and  (max-width:900px) {
-  .about-city {
-    .score-paragraph {
-      .score-elem {
-        .score-name {
-          width: 55%;
-        }
-        .score-rating {
-          width: 18%;
+@media only screen and (min-width:701px) and  (max-width:900px) {
+  #home {
+    .about-city {
+      .score-paragraph {
+        .score-elem {
+          .score-name {
+            width: 55%;
+          }
+          .score-rating {
+            width: 18%;
+          }
         }
       }
     }
@@ -17,10 +19,14 @@
   #home {
     #header {
       height: 30vh;
+      #city {
+        width: 200px;
+      }
     }
     #map {
       height: 50vh;
       width: 80vw;
+      margin-top: 20px;
     }
     .about-city {
       height: 70vh;
