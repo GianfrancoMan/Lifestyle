@@ -8,12 +8,14 @@ import { Tab } from "bootstrap";
 export
 class HandlerService {
 
+  #window;
   #document = null;
   #http;
   #map;
 
 
-  constructor(doc, L) {
+  constructor(window, doc, L) {
+    this.#window = window;
     this.#document = doc;
     this.#http = new HTTPService(doc);
     this._handlerEvent();
@@ -102,7 +104,8 @@ class HandlerService {
               `(cities like Rome, Milan or New York...).`);
           });
 
-          await this.#http.getImageCity(cityName).then((responseImage)=>{    //get an image of the city
+          let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
+          await this.#http.getImageCity(cityName, type).then((responseImage)=>{    //get an image of the city
             if(responseImage)
               aboutComponent.setImage(responseImage);
           })

@@ -69,6 +69,9 @@ body {
         display: flex;
         justify-content: center;
         align-items:start;
+        .score-name, .score-rating {
+          width:33%
+        }
         #div_color_container {
           display: flex;
           justify-content: center;
@@ -98,3 +101,8 @@ body {
   }
 
 }
+
+  /*-----------------------*/
+  /* *** Media Queries *** */
+  /*-----------------------*/
+  @import "mobile";

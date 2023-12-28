@@ -27,9 +27,9 @@ class HTTPService {
 
   //returns the image of the city if exists
   //this method should be considered private
-  async getImageCity(city) {
+  async getImageCity(city, type = "web") {
     return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
-      image.data.photos[0]["image"]["web"]
+      image.data.photos[0]["image"][`${type}`]
     );
   }
 

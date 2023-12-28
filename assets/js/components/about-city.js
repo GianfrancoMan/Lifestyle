@@ -24,14 +24,14 @@ class AboutComponent {
       scoreParagraph.setAttribute('class', "score-paragraph");
       scoreParagraph.setAttribute('id', `score-${i}`);
       scoreParagraph.innerHTML = `<div class="score-elem">`+
-                                  `<div style="color:blue; width:33%;">${score.name}</div>`+
+                                  `<div style="color:blue;" class="score-name">${score.name}</div>`+
                                   `<div  style="width:33%">`+
                                     `<div id="div_color_container">`+
                                       `<div class="score-color" style="width:${score.score_out_of_10 * 20}px; background-color:${score.color}"></div>`+
                                       `<div class="complement-div" style="width:${200-score.score_out_of_10*20 }px;"></div>`+
                                     `</div>`+
                                   `</div>`+
-                                  `<div style="color:blue;text-align:right;width:33%;">${score.score_out_of_10.toFixed(3)}</div>`+
+                                  `<div style="color:blue;text-align:right;" class="score-rating">${score.score_out_of_10.toFixed(3)}</div>`+
                                  `</div>`;
       i++;
     }
