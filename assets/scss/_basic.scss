@@ -4,6 +4,17 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: $primary_background;
+  background-image: url("../images/5594016.jpg");
+  background-repeat: round;
+  background-size: cover;
+  background-attachment: fixed;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 #home {
   width: 100vw;
   height: 100vh;
@@ -11,6 +22,7 @@
   background-image: url("../images/5594016.jpg");
   background-repeat: round;
   background-size: cover;
+  background-attachment: fixed;
   #header {
     text-align: center;
     color: $primary_text;
@@ -39,12 +51,50 @@
 
   .about-city {
     position: relative;
-    height: 77vh;
-    width: 80vw;
+    height: 73vh;
+    width: 65vw;
     margin: auto;
     margin-bottom: 10px;
-    border: 1px solid $orange;
     border-radius: 15px;
+    padding: 15px 30px 15px 30px;
+    .score-paragraph {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: auto;
+      .score-elem {
+        width: 100%;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items:start;
+        #div_color_container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 6px;
+          .score-color{
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            height: 15px;
+          }
+          .complement-div {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            background-color: lightgray;
+            height: 15px;
+          }
+        }
+      }
+    }
+    .image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      padding-bottom: 10px;
+    }
   }
 
 }

@@ -1,6 +1,8 @@
 import {HTTPService} from "./http-service";
 import { SpinnerComponent } from "../components/spinner";
 import { ToastComponent } from "../components/toast";
+import { AboutComponent } from "../components/about-city";
+import { AboutData } from "../models/about-data";
 import { Tab } from "bootstrap";
 
 export
@@ -21,6 +23,7 @@ class HandlerService {
 
   _handlerEvent() {
 
+    let aboutComponent = new AboutComponent(this.#document);
     let cityName;
     let imageCity;
 
@@ -84,9 +87,12 @@ class HandlerService {
             if(responseData)
               this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
               console.log(responseData);//TODO TODO TODO TODO
+              let aboutData = new AboutData(responseData);
               this.#document.querySelector("#search_container").setAttribute("hidden", true);
               this.#document.querySelector("#new_search_container").removeAttribute("hidden");
+              this.#document.querySelector(".about-city").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
+              aboutComponent.add(aboutData);
           })
           .catch(err => {
             checkDataError = true;
@@ -98,7 +104,7 @@ class HandlerService {
 
           await this.#http.getImageCity(cityName).then((responseImage)=>{    //get an image of the city
             if(responseImage)
-              console.log(responseImage);//TODO TODO TODO TODO
+              aboutComponent.setImage(responseImage);
           })
           .catch(err => {
             if(checkDataError) {
@@ -116,13 +122,19 @@ class HandlerService {
       });
 
       //Handler for 'new_search' button
-      let newSearchBtnElem = this.#document.addEventListener('click', (e)=> {
+      let newSearchBtnElem = this.#document.querySelector('#new_search');
+      newSearchBtnElem.addEventListener('click', (e)=> {
+        console.log(e.target);
+        if(e.target != newSearchBtnElem) return;
+
         this.#document.querySelector("#search_container").removeAttribute("hidden");
         this.#document.querySelector("#new_search_container").setAttribute("hidden", true);
+        this.#document.querySelector(".about-city").setAttribute("hidden", true);
         this.#document.querySelector("#map").removeAttribute("hidden");
 
         this.#document.querySelector("#city").value = "";
 
+        aboutComponent.remove();
         this._createMap();   //I create a new map to be used by the user(it was removed earlier when we got the city data).
       });
 

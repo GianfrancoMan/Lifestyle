@@ -29,7 +29,7 @@ class HTTPService {
   //this method should be considered private
   async getImageCity(city) {
     return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
-      image.data.photos[0]["image"]["mobile"]
+      image.data.photos[0]["image"]["web"]
     );
   }
 
