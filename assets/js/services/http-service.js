@@ -75,15 +75,19 @@ class HTTPService {
 
   //Asks LocationIq web service for the city closest to the provided coordinates, if it exists.
   async getNearCityByCoords(lat, lng) {
+    let result;
     let path = import.meta.env.MAN_LOCIQ_PREFIX + lat + import.meta.env.MAN_LOCIQ_MIDLE + lng + import.meta.env.MAN_LOCIQ_SUFIX;
     if(this.#latest !== path) {
       this.#latest = path;
       return axios.get(path).then((response) => {
         console.log(response.data);
-        if( response.data.address.village)
-          return response.data.address.village;
+        if( response.data.address.county) {
+          return response.data.address.county;
+        } else if(response.data.address.city) {
+            return response.data.address.city;
+          }
 
-        return response.data.address.city;
+        else return response.data.address.village
       });
     }
 
