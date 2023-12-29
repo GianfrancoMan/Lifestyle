@@ -4,6 +4,7 @@ class AboutComponent {
   #document;
   #elem;
   #imageElem;
+  #cityName = "";
 
 
 
@@ -40,7 +41,7 @@ class AboutComponent {
     this.#elem.append(total);
     total.innerHTML = `<div class="score-paragraph">`+
                         `<div class="score-elem">`+
-                          `<div style="margin-top: 10px;"><h3>Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
+                          `<div style="margin-top: 10px;"><h3>${this.#cityName} Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
                         `</div>`+
                       `</div>`+
                       `<div class="score-paragraph">`+
@@ -64,5 +65,9 @@ class AboutComponent {
     }
     if(this.#imageElem)
       this.#imageElem.remove();
+  }
+
+  _setCityName(value) {
+    this.#cityName = value;
   }
 }

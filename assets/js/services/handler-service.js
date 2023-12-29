@@ -85,7 +85,8 @@ class HandlerService {
           spinner.start();    //...that appears until data is available.
 
           await this.#http.getDataForCity(cityName).then((responseData)=>{
-            if(responseData)
+            if(responseData) {
+              aboutComponent._setCityName(this._ucFirst(cityName));
               this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
               let aboutData = new AboutData(responseData);
               this.#document.querySelector("#search_container").setAttribute("hidden", true);
@@ -93,6 +94,7 @@ class HandlerService {
               this.#document.querySelector(".about-city").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
               aboutComponent.add(aboutData);
+            }
           })
           .catch(err => {
             checkDataError = true;
