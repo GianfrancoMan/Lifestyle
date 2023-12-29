@@ -18,7 +18,7 @@ class AboutComponent {
   add(data) {
     //append whole score values
     let i = 0;
-    let city = this.#document.querySelector("#city").value;
+    let city = data.description.split(',')[0];
     for(let score of data.scores) {
       let scoreParagraph  = this.#document.createElement('div');
       this.#elem.append(scoreParagraph);
