@@ -69,7 +69,9 @@ body {
         display: flex;
         justify-content: center;
         align-items:start;
+        color: $primary_text;
         .score-name, .score-rating {
+          color: $primary_text;
           width:33%
         }
         #div_color_container {

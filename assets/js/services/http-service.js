@@ -41,6 +41,7 @@ class HTTPService {
   async _dataForCity(city) {
     let url = import.meta.env.MAN_TELEPORT_ROOT + city;
     const response = await axios.get(url);
+    if(response.data.count === 0) throw new Error();
     let data = await this._findCityGeonameUrl(response, city);
     return await this._getUrbanArea(data).then((urbanArea) => urbanArea);
   }
@@ -80,14 +81,17 @@ class HTTPService {
     if(this.#latest !== path) {
       this.#latest = path;
       return axios.get(path).then((response) => {
-        console.log(response.data);
-        if( response.data.address.county) {
-          return response.data.address.county;
-        } else if(response.data.address.city) {
-            return response.data.address.city;
-          }
+        if( response.data.address.city) {
+          return response.data.address.city;
+        } else if(response.data.address.county) {
+            return response.data.address.county;
+          } else if(response.data.address.municipality) {
+            return response.data.address.municipality;
+          } else if(response.data.address.village) {
+              return response.data.address.village;
+            }
 
-        else return response.data.address.village
+        else throw new Error();
       });
     }
 
@@ -103,11 +107,13 @@ class HTTPService {
     return new Promise((resolve, reject )=> {
       let results = resultData.data["_embedded"]["city:search-results"];
       if(results) {
-        //Data will be returned only if the the passed by the user match the "alternate name" of the response.
+        /*Data will be returned only if the the place passed by the user match the "alternate name" of the response.
+        This is due to the fact that sometimes there are places that have the same name but one can be a city or a village,
+        and another a city neighborhood that we have not chosen, but if the latter has an urban area address ',
+        could be returned instead of the desired one.*/
         for(let result of results) {
           for(let matching_alternate_names of result["matching_alternate_names"]) {
             if(matching_alternate_names["name"].toLowerCase() === city.toLowerCase()) {
-              console.log(result["_links"]["city:item"]["href"]);
               return resolve(result["_links"]["city:item"]["href"]);
             }
           }
