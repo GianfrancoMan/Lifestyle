@@ -18,7 +18,6 @@ class AboutComponent {
   add(data) {
     //append whole score values
     let i = 0;
-    let city = data.description.split(',')[0];
     for(let score of data.scores) {
       let scoreParagraph  = this.#document.createElement('div');
       this.#elem.append(scoreParagraph);
@@ -41,7 +40,7 @@ class AboutComponent {
     this.#elem.append(total);
     total.innerHTML = `<div class="score-paragraph">`+
                         `<div class="score-elem">`+
-                          `<div style="margin-top: 10px;"><h3>${city} Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
+                          `<div style="margin-top: 10px;"><h3>Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
                         `</div>`+
                       `</div>`+
                       `<div class="score-paragraph">`+
