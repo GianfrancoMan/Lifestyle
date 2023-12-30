@@ -1,3 +1,4 @@
+import  { functions } from './../services/functions'
 export
 class AboutComponent {
 
@@ -18,6 +19,7 @@ class AboutComponent {
 
   add(data) {
     //append whole score values
+    this.#cityName = data.city;
     let i = 0;
     for(let score of data.scores) {
       let scoreParagraph  = this.#document.createElement('div');
@@ -41,7 +43,7 @@ class AboutComponent {
     this.#elem.append(total);
     total.innerHTML = `<div class="score-paragraph">`+
                         `<div class="score-elem">`+
-                          `<div style="margin-top: 10px;"><h3>${this.#cityName} Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
+                          `<div style="margin-top: 10px;"><h3>${functions._ucFirst(this.#cityName)} Total Rating: ${data.totalScore.toFixed(3)}</h3></div>`+
                         `</div>`+
                       `</div>`+
                       `<div class="score-paragraph">`+
@@ -67,7 +69,4 @@ class AboutComponent {
       this.#imageElem.remove();
   }
 
-  _setCityName(value) {
-    this.#cityName = value;
-  }
 }

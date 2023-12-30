@@ -3,14 +3,16 @@ import { Score } from "./score";
 
 export 
 class AboutData {
+  city;
   scores = [];
   description;
   totalScore;
 
   constructor(data) {
-    this._setScores(data[0]);
-    this.description = data[1];
-    this.totalScore = data[2];
+    this.city = data[0];
+    this._setScores(data[1]);
+    this.description = data[2];
+    this.totalScore = data[3];
   }
 
   _setScores(values) {

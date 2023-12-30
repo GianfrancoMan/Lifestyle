@@ -14,7 +14,10 @@ class HTTPService {
   //this method should be considered private
   async getDataForCity(city) {
     return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "scores/").then(scores => {
+       let arr = scores.data["_links"]["self"]["href"].split('/');
+       arr = arr[scores.data["_links"]["self"]["href"].split('/').length -3].split(':');
       return [
+        arr[1],
         scores.data["categories"],
         scores.data["summary"],
         scores.data["teleport_city_score"]
@@ -28,9 +31,9 @@ class HTTPService {
   //returns the image of the city if exists
   //this method should be considered private
   async getImageCity(city, type = "web") {
-    return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image =>
-      image.data.photos[0]["image"][`${type}`]
-    );
+    return await this._getAvailableDataByPath(await this._dataForCity(city).then(urbanArea => urbanArea), "images/").then(image => {
+      return image.data.photos[0]["image"][`${type}`];
+    });
   }
 
 
@@ -53,7 +56,10 @@ class HTTPService {
   //Returns "data urban area" path of the city.
   async _getUrbanArea(path) {
     return axios.get(path).then(response => {
-      return response.data["_links"]["city:urban_area"]["href"];
+      if(response.data["_links"]["city:urban_area"]["href"]) {
+        return response.data["_links"]["city:urban_area"]["href"];
+      }
+      else throw new Error();
     });
   }
 
@@ -68,7 +74,13 @@ class HTTPService {
   async _getAvailableDataByPath(path, suffix) {
     const url = path + suffix;
     return axios.get(url)
-    .then(response => response );
+    .then(response => {
+      if (response)
+        return response
+
+        else
+          throw new Error();
+     });
   }
 
 
@@ -118,6 +130,7 @@ class HTTPService {
             }
           }
         }
+        throw new Error();
       }
     });
   }

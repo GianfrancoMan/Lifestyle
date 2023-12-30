@@ -3,6 +3,7 @@ import { SpinnerComponent } from "../components/spinner";
 import { ToastComponent } from "../components/toast";
 import { AboutComponent } from "../components/about-city";
 import { AboutData } from "../models/about-data";
+import { functions } from "../services/functions";
 
 export
 class HandlerService {
@@ -86,7 +87,6 @@ class HandlerService {
 
           await this.#http.getDataForCity(cityName).then((responseData)=>{
             if(responseData) {
-              aboutComponent._setCityName(this._ucFirst(cityName));
               this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
               let aboutData = new AboutData(responseData);
               this.#document.querySelector("#search_container").setAttribute("hidden", true);
@@ -100,24 +100,23 @@ class HandlerService {
             checkDataError = true;
 
             toast.createToast(
-              `There is no lifestyle data available for ${ this._ucFirst(cityName)}<br/>`+
+              `There is no lifestyle data available for ${ functions._ucFirst(cityName)}<br/>`+
               `Usually this type of data is available for very large or important cities<br>`+
               `(cities like Rome, Milan or New York...).`);
           });
 
           let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
           await this.#http.getImageCity(cityName, type).then((responseImage)=>{    //get an image of the city
-            if(responseImage)
               aboutComponent.setImage(responseImage);
           })
           .catch(err => {
             if(checkDataError) {
-              toast.append(`<br>There is no image available for ${this._ucFirst(cityName)}`);
+              toast.append(`<br>There is no image available for ${functions._ucFirst(cityName)}`);
               checkDataError = false;
             }
             else {    //If for some unforeseeable reason the application was unable to recover the image :)
               let toastImage = new ToastComponent(this.#document);
-              toastImage.createToast(`There is no image available for ${this._ucFirst(cityName)} city.`);
+              toastImage.createToast(`There is no image available for ${functions._ucFirst(cityName)} city.`);
             }
           });
 
@@ -173,11 +172,6 @@ class HandlerService {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(this.#map);
-  }
-
-  //Capitalizes the first 'str' character, this method should be considered private.
-  _ucFirst(str) {
-    return str.substring(0,1).toUpperCase() + str.substring(1);
   }
 
 }
