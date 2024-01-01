@@ -96,7 +96,6 @@ class HandlerService {
               this.#document.querySelector(".about-city").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
               aboutComponent.add(aboutData);
-              this.#document.querySelector("#city").value = "";
             }
           })
           .catch(err => {
@@ -124,6 +123,7 @@ class HandlerService {
           });
 
           countryCode = "no_code";
+          this.#document.querySelector("#city").value = "";
           spinner.stop();
         }
       });
