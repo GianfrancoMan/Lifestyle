@@ -27,7 +27,7 @@ class HandlerService {
 
     let aboutComponent = new AboutComponent(this.#document);
     let cityName;
-    let imageCity;
+    let countryCode = "no_code";
 
     window.onload = ()=> {
       //contents are displayed only when whole assets has been loaded
@@ -55,8 +55,10 @@ class HandlerService {
 
           await  this.#http.getNearCityByCoords(clickedLatLng.lat, clickedLatLng.lng)
           .then((response)=> {
-            if(response)
-              cityName = response;
+            if(response) {
+              cityName = response[1];
+              countryCode = response[0];
+            }
           })
           .catch(err => {
             let toast = new ToastComponent(this.#document);   //creates a toast...
@@ -85,7 +87,7 @@ class HandlerService {
           let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
           spinner.start();    //...that appears until data is available.
 
-          await this.#http.getDataForCity(cityName).then((responseData)=>{
+          await this.#http.getDataForCity(cityName, countryCode).then((responseData)=>{
             if(responseData) {
               this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
               let aboutData = new AboutData(responseData);
@@ -104,11 +106,10 @@ class HandlerService {
               `There is no lifestyle data available for ${ functions._ucFirst(cityName)}<br/>`+
               `Usually this type of data is available for very large or important cities<br>`+
               `(cities like Rome, Milan or New York...).`);
-              this.#document.querySelector("#city").value = "";
           });
 
           let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
-          await this.#http.getImageCity(cityName, type).then((responseImage)=>{    //get an image of the city
+          await this.#http.getImageCity(cityName, countryCode, type).then((responseImage)=>{    //get an image of the city
               aboutComponent.setImage(responseImage);
           })
           .catch(err => {
@@ -122,6 +123,7 @@ class HandlerService {
             }
           });
 
+          countryCode = "no_code";
           spinner.stop();
         }
       });
