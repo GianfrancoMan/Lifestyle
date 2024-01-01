@@ -139,7 +139,6 @@ class HTTPService {
     return new Promise((resolve, reject )=> {
       let results = resultData.data["_embedded"]["city:search-results"];
       if(results) {
-        console.log(results);
         /*Data will be returned only if the the place passed by the user match the "alternate name" of the response.
         This is due to the fact that sometimes there are places that have the same name but one can be a city or a village,
         and another a city neighborhood that we have not chosen, but if the latter has an urban area address ',
@@ -147,7 +146,6 @@ class HTTPService {
         for(let result of results) {
           let currentCountryName = result.matching_full_name.split(',');
           currentCountryName = currentCountryName[currentCountryName.length-1].toLowerCase().trim().split(" ")[0];
-          console.log("current:"+currentCountryName, "name:"+countryName);
           if(currentCountryName === countryName || countryCode === "no_code") {
             for(let matching_alternate_names of result["matching_alternate_names"]) {
               if(matching_alternate_names["name"].toLowerCase() === city.toLowerCase()) {
