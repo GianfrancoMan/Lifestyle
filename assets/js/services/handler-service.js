@@ -94,6 +94,7 @@ class HandlerService {
               this.#document.querySelector(".about-city").removeAttribute("hidden");
               this.#document.querySelector("#map").setAttribute("hidden", true);
               aboutComponent.add(aboutData);
+              this.#document.querySelector("#city").value = "";
             }
           })
           .catch(err => {
@@ -103,6 +104,7 @@ class HandlerService {
               `There is no lifestyle data available for ${ functions._ucFirst(cityName)}<br/>`+
               `Usually this type of data is available for very large or important cities<br>`+
               `(cities like Rome, Milan or New York...).`);
+              this.#document.querySelector("#city").value = "";
           });
 
           let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
