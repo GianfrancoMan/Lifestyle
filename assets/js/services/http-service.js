@@ -94,6 +94,7 @@ class HTTPService {
       this.#latest = path;
       let cityAndCode = [];
       return axios.get(path).then((response) => {
+        console.log(response);
         cityAndCode.push(response.data.address.country_code);
         if( response.data.address.city) {
           cityAndCode.push(response.data.address.city);

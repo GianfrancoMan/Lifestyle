@@ -12,6 +12,9 @@ class HandlerService {
   #document = null;
   #http;
   #map;
+  #aboutComponent;
+  #cityName;
+  #countryCode;
 
 
   constructor(window, doc, L) {
@@ -25,9 +28,9 @@ class HandlerService {
 
   _handlerEvent() {
 
-    let aboutComponent = new AboutComponent(this.#document);
-    let cityName;
-    let countryCode = "no_code";
+    this.#aboutComponent = new AboutComponent(this.#document);
+    this.#cityName;
+    this.#countryCode = "no_code";
 
     window.onload = ()=> {
       //contents are displayed only when whole assets has been loaded
@@ -47,7 +50,7 @@ class HandlerService {
         //handles map clicks
         this.#map.on('click', async (event) => {
           var clickedLatLng = event.latlng;
-          cityName = "";
+          this.#cityName = "";
 
 
           let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
@@ -56,8 +59,8 @@ class HandlerService {
           await  this.#http.getNearCityByCoords(clickedLatLng.lat, clickedLatLng.lng)
           .then((response)=> {
             if(response) {
-              cityName = response[1];
-              countryCode = response[0];
+              this.#cityName = response[1];
+              this.#countryCode = response[0];
             }
           })
           .catch(err => {
@@ -68,65 +71,28 @@ class HandlerService {
           spinner.stop();
 
 
-          if(cityName) {
-            this.#document.querySelector("#city").value = cityName;
+          if(this.#cityName) {
+            this.#document.querySelector("#city").value = this.#cityName;
           }
         });
       });
+
+      //handle "Enter" keydown event
+      this.#document.querySelector("#city").addEventListener('keydown',(e)=>{
+        if (e.code === "Enter")
+            this._handleInputField();
+      });
+
+
 
 
       //handles city-button clicks.
       let searchBtnElem = this.#document.querySelector('#search');
       searchBtnElem.addEventListener('click', async (e)=> {
-        let checkDataError= false;
-        let toast = new ToastComponent(this.#document);
-        cityName = this.#document.querySelector("#city").value;
-
-        if(cityName) {
-          cityName = this._normalizeCity(cityName);
-          let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
-          spinner.start();    //...that appears until data is available.
-
-          await this.#http.getDataForCity(cityName, countryCode).then((responseData)=>{
-            if(responseData) {
-              this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
-              let aboutData = new AboutData(responseData);
-              this.#document.querySelector("#search_container").setAttribute("hidden", true);
-              this.#document.querySelector("#new_search_container").removeAttribute("hidden");
-              this.#document.querySelector(".about-city").removeAttribute("hidden");
-              this.#document.querySelector("#map").setAttribute("hidden", true);
-              aboutComponent.add(aboutData);
-            }
-          })
-          .catch(err => {
-            checkDataError = true;
-
-            toast.createToast(
-              `There is no lifestyle data available for ${ functions._ucFirst(cityName)}<br/>`+
-              `Usually this type of data is available for very large or important cities<br>`+
-              `(cities like Rome, Milan or New York...).`);
-          });
-
-          let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
-          await this.#http.getImageCity(cityName, countryCode, type).then((responseImage)=>{    //get an image of the city
-              aboutComponent.setImage(responseImage);
-          })
-          .catch(err => {
-            if(checkDataError) {
-              toast.append(`<br>There is no image available for ${functions._ucFirst(cityName)}`);
-              checkDataError = false;
-            }
-            else {    //If for some unforeseeable reason the application was unable to recover the image :)
-              let toastImage = new ToastComponent(this.#document);
-              toastImage.createToast(`There is no image available for ${functions._ucFirst(cityName)} city.`);
-            }
-          });
-
-          countryCode = "no_code";
-          this.#document.querySelector("#city").value = "";
-          spinner.stop();
-        }
+        this._handleInputField();
       });
+
+
 
       //Handler for 'new_search' button
       let newSearchBtnElem = this.#document.querySelector('#new_search');
@@ -140,7 +106,7 @@ class HandlerService {
 
         this.#document.querySelector("#city").value = "";
 
-        aboutComponent.remove();
+        this.#aboutComponent.remove();
         this._createMap();   //I create a new map to be used by the user(it was removed earlier when we got the city data).
       });
 
@@ -176,6 +142,64 @@ class HandlerService {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(this.#map);
+  }
+
+
+
+  /*
+  This method is the handles events triggered by the users
+  when they  press the search button or  press the "Enter" key
+  inside the  city entry field
+  */
+  async  _handleInputField() {
+    let checkDataError= false;
+        let toast = new ToastComponent(this.#document);
+        this.#cityName = this.#document.querySelector("#city").value;
+
+        if(this.#cityName) {
+          this.#cityName = this._normalizeCity(this.#cityName);
+          let spinner = new SpinnerComponent(this.#document);   //creates a spinner...
+          spinner.start();    //...that appears until data is available.
+
+          await this.#http.getDataForCity(this.#cityName, this.#countryCode).then((responseData)=>{
+            if(responseData) {
+              this.#map.remove();   //I have decided to remove and create a new map wherever needed for update issues
+              let aboutData = new AboutData(responseData);
+              this.#document.querySelector("#search_container").setAttribute("hidden", true);
+              this.#document.querySelector("#new_search_container").removeAttribute("hidden");
+              this.#document.querySelector(".about-city").removeAttribute("hidden");
+              this.#document.querySelector("#map").setAttribute("hidden", true);
+              this.#aboutComponent.add(aboutData);
+            }
+          })
+          .catch(err => {
+            checkDataError = true;
+
+            toast.createToast(
+              `There is no lifestyle data available for ${ functions._ucFirst(this.#cityName)}<br/>`+
+              `Usually this type of data is available for very large or important cities<br>`+
+              `(cities like Rome, Milan or New York...).`);
+          });
+
+          let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
+          await this.#http.getImageCity(this.#cityName, this.#countryCode, type).then((responseImage)=>{    //get an image of the city
+              this.#aboutComponent.setImage(responseImage);
+          })
+          .catch(err => {
+            if(checkDataError) {
+              toast.append(`<br>There is no image available for ${functions._ucFirst(this.#cityName)}`);
+              checkDataError = false;
+            }
+            else {    //If for some unforeseeable reason the application was unable to recover the image :)
+              let toastImage = new ToastComponent(this.#document);
+              toastImage.createToast(`There is no image available for ${functions._ucFirst(this.#cityName)} city.`);
+            }
+          });
+
+          this.#countryCode = "no_code";
+          this.#document.querySelector("#city").value = "";
+          spinner.stop();
+        }
   }
 
 }
