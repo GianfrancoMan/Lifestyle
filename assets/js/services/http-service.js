@@ -94,7 +94,6 @@ class HTTPService {
       this.#latest = path;
       let cityAndCode = [];
       return axios.get(path).then((response) => {
-        console.log(response);
         cityAndCode.push(response.data.address.country_code);
         if( response.data.address.city) {
           cityAndCode.push(response.data.address.city);
@@ -134,6 +133,7 @@ class HTTPService {
       for(let country of countries.data["_links"]["country:items"]) {
         if(countryCode.toLowerCase() === this._getCode(country.href)) {
           countryName = country.name.toLowerCase();
+          break;
         }
       }
     }
@@ -145,9 +145,15 @@ class HTTPService {
         and another a city neighborhood that we have not chosen, but if the latter has an urban area address ',
         could be returned instead of the desired one.*/
         for(let result of results) {
-          let currentCountryName = result.matching_full_name.split(',');
-          currentCountryName = currentCountryName[currentCountryName.length-1].toLowerCase().trim().split(" ")[0];
-          if(currentCountryName === countryName || countryCode === "no_code") {
+          let arrCountryName = result.matching_full_name.split(',');
+          arrCountryName = arrCountryName[arrCountryName.length-1].toLowerCase().split(" ");
+          let currentCountryName = '';
+          for(let item of arrCountryName) {
+            if(item.charAt(0)!== '(') {
+              currentCountryName += " "+item;
+            } else break;
+          }
+          if(currentCountryName.trim() === countryName || countryCode === "no_code") {
             for(let matching_alternate_names of result["matching_alternate_names"]) {
               if(matching_alternate_names["name"].toLowerCase() === city.toLowerCase()) {
                 return resolve(result["_links"]["city:item"]["href"]);
