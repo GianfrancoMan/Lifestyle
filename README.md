@@ -63,3 +63,6 @@ The application also works well on mobile devices
 ---------------
 *This is the final project of the advanced javascript course of the Full Stack Development master's degree at [Start2Impact University](https://www.start2impact.it/)*
 
+-------------------
+ Demo available here: [lifestyle](https://lifestyle-proj.netlify.app/)
+
