@@ -28,6 +28,10 @@ Clone this repo:
 
     git clone https://github.com/GianfrancoMan/Lifestyle.git
 
+Move to the "lifestyle" directory:
+
+    cd ./lifestyle
+
 Install dependecies
 
     npm install
