@@ -176,9 +176,13 @@ class HandlerService {
             checkDataError = true;
 
             toast.createToast(
-              `There is no lifestyle data available for ${ functions._ucFirst(this.#cityName)}<br/>`+
-              `Usually this type of data is available for very large or important cities<br>`+
-              `(cities like Rome, Milan or New York...).`);
+              `Unfortunately following Topia's acquisition of Teleport<br>`+
+              `all Rest APIs were retired and no data can be recovered.<br>`+
+              `:(`
+              // `There is no lifestyle data available for ${ functions._ucFirst(this.#cityName)}<br/>`+
+              // `Usually this type of data is available for very large or important cities<br>`+
+              // `(cities like Rome, Milan or New York...).`
+              );
           });
 
           let type = this.#window.screenX > 700 ? "web" : "mobile";   //chooses the  image to display based on the screen size.
